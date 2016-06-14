@@ -1,5 +1,7 @@
 package org.seckill.dao.cache;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.seckill.dao.SeckillDao;
@@ -16,6 +18,8 @@ public class RedisDaoTest {
 
     private long id = 1001;
 
+    private Log logger = LogFactory.getLog(this.getClass());
+
     @Autowired
     private RedisDao redisDao;
 
@@ -28,11 +32,14 @@ public class RedisDaoTest {
         Seckill seckill = redisDao.getSeckill(id);
         if (seckill == null) {
             seckill = seckillDao.queryById(id);
+            assertNotNull(seckill);
             if (seckill != null) {
                 String result = redisDao.putSeckill(seckill);
-                System.out.println(result);
+                assertEquals("OK",result);
+                logger.info(result);
                 seckill = redisDao.getSeckill(id);
-                System.out.println(seckill);
+                assertNotNull(seckill);
+                logger.info(seckill);
             }
         }
     }

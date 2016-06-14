@@ -1,35 +1,100 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <configuration>
-    <jmxConfigurator />
-    <!-- 控制台输出日志 -->
-    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
-                %msg%n</pattern>
-        </layout>
-    </appender>
-    <!-- 文件输出日志 (文件大小策略进行文件输出，超过指定大小对文件备份) -->
-    <appender name="FILE"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <File>app.log</File>
-        <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>app.log.%i.bak</FileNamePattern>
-            <MinIndex>1</MinIndex>
-            <MaxIndex>12</MaxIndex>
-        </rollingPolicy>
-        <triggeringPolicy
-                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-            <MaxFileSize>100MB</MaxFileSize>
-        </triggeringPolicy>
-        <layout class="ch.qos.logback.classic.PatternLayout">
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} -
-                %msg%n</Pattern>
-        </layout>
-    </appender>
-    <!--这里指定logger name 是为jmx设置日志级别做铺垫 -->
-    <logger name="com.xxx.xxx">
-        <level value="INFO" />
-        <appender-ref ref="STDOUT" />
-        <appender-ref ref="FILE" />
-    </logger>
+<appender name="all_error" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.LevelFilter">
+        <level>ERROR</level>
+        <onMatch>ACCEPT</onMatch>
+        <onMismatch>DENY</onMismatch>
+    </filter>
+    <File>./log/applog_all_error.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <FileNamePattern>./log/applog_all_error.%i.log</FileNamePattern>
+        <MinIndex>1</MinIndex>
+        <MaxIndex>5</MaxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        <MaxFileSize>10MB</MaxFileSize>
+    </triggeringPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date [%thread] %-5level %logger{80} - %msg%n</Pattern>
+    </layout>
+</appender>
+<appender name="all_info" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+        <level>INFO</level>
+    </filter>
+    <File>./log/applog_all_info.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <FileNamePattern>./log/applog_all_info.%i.log</FileNamePattern>
+        <MinIndex>1</MinIndex>
+        <MaxIndex>5</MaxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        <MaxFileSize>20MB</MaxFileSize>
+    </triggeringPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date [%thread] %-5level %logger{80} - %msg%n</Pattern>
+    </layout>
+</appender>
+<appender name="controller_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>./log/applog_controller_debug.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <FileNamePattern>./log/applog_controller_debug.%i.log</FileNamePattern>
+        <MinIndex>1</MinIndex>
+        <MaxIndex>5</MaxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        <MaxFileSize>100MB</MaxFileSize>
+    </triggeringPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date [%thread] %-5level %logger{80} - %msg%n</Pattern>
+    </layout>
+</appender>
+
+<appender name="service_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>./log/applog_service_err.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <FileNamePattern>./log/applog_service_err.%i.log</FileNamePattern>
+        <MinIndex>1</MinIndex>
+        <MaxIndex>5</MaxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date [%thread] %-5level %logger{80} - %msg%n</Pattern>
+    </layout>
+</appender>
+
+<appender name="dao_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <File>./log/applog_dao_info.log</File>
+    <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+        <FileNamePattern>./log/applog_dao_info.%i.log</FileNamePattern>
+        <MinIndex>1</MinIndex>
+        <MaxIndex>5</MaxIndex>
+    </rollingPolicy>
+    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+        <MaxFileSize>5MB</MaxFileSize>
+    </triggeringPolicy>
+    <layout class="ch.qos.logback.classic.PatternLayout">
+        <Pattern>%date [%thread] %-5level %logger{80} - %msg%n</Pattern>
+    </layout>
+</appender>
+
+<logger name="org.seckill.web.api" level="DEBUG">
+    <appender-ref ref="controller_log" />
+</logger>
+
+<logger name="org.seckill.service" level="ERROR">
+    <appender-ref ref="service_log" />
+</logger>
+
+<logger name="org.seckill.dao" level="INFO">
+    <appender-ref ref="dao_log" />
+</logger>
+
+<root>
+    <appender-ref ref="all_info" level="INFO" />
+    <appender-ref ref="all_error" />
+</root>
 </configuration>
